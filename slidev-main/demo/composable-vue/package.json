@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "nodemon -w '../../packages/slidev/dist/*.mjs' --exec 'slidev --log=info'",
+    "build": "slidev build",
+    "export": "slidev export",
+    "export:clicks": "slidev export --with-clicks"
+  },
+  "devDependencies": {
+    "@iconify-json/mdi": "catalog:icons",
+    "@iconify-json/ri": "catalog:icons",
+    "@slidev/cli": "workspace:*",
+    "@slidev/theme-default": "catalog:themes",
+    "@slidev/theme-seriph": "catalog:themes",
+    "@slidev/types": "workspace:*",
+    "nodemon": "catalog:dev"
+  }
+}

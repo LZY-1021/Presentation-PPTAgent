@@ -1,0 +1,634 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Times New Roman', serif;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 60px;
+  background: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+}
+
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  padding: 15px 0;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.sidebar-item:hover {
+  background: #333;
+}
+
+.sidebar-item i {
+  font-size: 1.5rem;
+}
+.sidebar-item span {
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+/* ★ 关键：继承高度和列方向，确保flex分布，减少高度冲突 */
+.main-content, .chat-page, .chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.main-content {
+  margin-left: 60px;
+  width: calc(100% - 60px);
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.chat-page {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  background-color: #f5f7fa;
+  box-shadow: none;
+}
+
+.markdown-section {
+  border-bottom: 1px solid #e1e4e8;
+  padding: 20px;
+  background-color: #fff;
+  flex: 0 0 auto;
+  max-height: 300px;
+  transition: max-height 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.markdown-container {
+  display: flex;
+  height: 100%;
+  gap: 30px;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.markdown-editor, .markdown-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  min-width: 0;
+}
+
+.markdown-editor h3, .markdown-preview h3 {
+  background: #212121;
+  color: white;
+  margin: 0;
+  padding: 10px 15px;
+  font-size: 1.2rem;
+}
+
+.markdown-input {
+  flex: 1;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  resize: none;
+  font-family: 'Times New Roman', serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background: #f8fafc;
+}
+
+.markdown-input:focus {
+  outline: none;
+  background: #fff;
+}
+
+.preview-container {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  font-size: 16px;
+  background-color: #ffffff;
+}
+
+.preview-container h1 {
+  font-size: 2.5rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+.preview-container h2 {
+  font-size: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 6px;
+}
+.preview-container h3 {
+  font-size: 1.5rem;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+.preview-container pre {
+  background: #f0f0f0;
+  color: #2d2d2d;
+  padding: 15px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+.preview-container code {
+  font-family: 'Times New Roman', serif;
+  background: #f0f0f0;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.preview-container blockquote {
+  border-left: 4px solid #212121;
+  background: #f0f4f8;
+  padding: 8px 15px;
+  margin: 5px 0;
+}
+.markdown-send-button {
+  padding: 8px 16px;
+  background: #212121;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 15px;
+  font-weight: bold;
+  transition: background 0.2s;
+  font-family: 'Times New Roman', serif;
+}
+.markdown-send-button:hover {
+  background: #212121;
+}
+.markdown-send-button.disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* 聊天区域 */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+  background: #f0f2f5;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  /* max-height 已移除以自适应高度让输入框粘底 */
+}
+
+/* 消息样式 */
+.message {
+  display: flex;
+  margin-bottom: 30px;
+}
+.message.user {
+  justify-content: flex-end;
+}
+.message.ai {
+  justify-content: flex-start;
+}
+.message.ai .ai-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: contain;
+}
+.message > div {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  line-height: 1.4;
+  font-size: 16px;
+}
+.message.user > div {
+  background: #212121;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+.message.ai > div {
+  background: white;
+  color: #333;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+.uploaded-image {
+  max-width: 300px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+.uploaded-file {
+  color: #212121;
+  text-decoration: none;
+  font-weight: bold;
+}
+.uploaded-file:hover {
+  text-decoration: underline;
+}
+
+/* 输入区域样式 ★ 关键：sticky */
+.chat-input {
+  display: flex;
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #e1e4e8;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.chat-input-field {
+  flex: 1;
+  padding: 12px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 24px;
+  font-size: 16px;
+  outline: none;
+  margin-right: 20px;
+  font-family: 'Times New Roman', serif;
+}
+
+.chat-input-field:focus {
+  border-color: #212121;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.upload-button {
+  background: #f1f5f9;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-right: 20px;
+  border: 1px solid #d1d5db;
+}
+.upload-button:hover {
+  background: #e2e8f0;
+}
+
+.chat-send-button {
+  padding: 0 24px;
+  background: #212121;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Times New Roman', serif;
+}
+.chat-send-button:hover {
+  background: #212121;
+}
+.chat-send-button.disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  .sidebar {
+    width: 100%;
+    height: 60px;
+    flex-direction: row;
+    justify-content: space-around;
+    bottom: 0;
+    top: auto;
+  }
+  .chat-page {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .header {
+    left: 0 !important;
+  }
+  .markdown-container {
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+  }
+  .chat-input {
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+  }
+  .chat-input-field {
+    width: 100%;
+    margin: 0 0 10px 0;
+  }
+  .file-upload-container {
+    order: 1;
+    margin-right: 12px;
+  }
+  .chat-send-button {
+    order: 2;
+    flex: 1;
+  }
+  /* max-height 可选：如有需求可调整或注释掉 */
+  .chat-messages {
+    /* max-height: calc(100vh - 300px - 60px - 60px); */
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Markdown编辑区展开动画 */
+.markdown-section.expanded {
+  max-height: 80vh;
+  transition: max-height 0.3s ease;
+}
+/* 夜间模式样式 */
+.night-mode {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.night-mode .sidebar {
+  background: #000;
+}
+
+.night-mode .main-content {
+  background-color: #1a1a1a;
+}
+
+.night-mode .chat-page {
+  background-color: #1a1a1a;
+}
+
+.night-mode .markdown-section {
+  background-color: #222;
+  border-bottom: 1px solid #333;
+}
+
+.night-mode .markdown-editor,
+.night-mode .markdown-preview {
+  background: #222;
+  border: 1px solid #333;
+}
+
+.night-mode .markdown-editor h3,
+.night-mode .markdown-preview h3 {
+  background: #333;
+}
+
+.night-mode .markdown-input {
+  background: #222;
+  color: white;
+}
+
+.night-mode .preview-container {
+  background-color: #222;
+  color: white;
+}
+
+.night-mode .chat-container {
+  background: #1a1a1a;
+}
+
+.night-mode .chat-messages {
+  background: #1a1a1a;
+}
+
+.night-mode .message.user > div {
+  background: #333;
+}
+
+.night-mode .message.ai > div {
+  background: #222;
+  color: white;
+}
+
+/* src/index.css */
+
+/* 夜间模式下消息输入框样式 */
+.night-mode .chat-input-field {
+  background: #333;
+  color: white;
+  border-color: #555;
+}
+
+.night-mode .chat-input-field:focus {
+  border-color: #aaa;
+  box-shadow: 0 0 0 2px rgba(200, 200, 200, 0.2);
+}
+
+/* 夜间模式下发送按钮样式 */
+.night-mode .chat-send-button {
+  background: #555;
+}
+
+.night-mode .chat-send-button:hover {
+  background: #666;
+}
+
+.night-mode .chat-send-button.disabled {
+  background: #444;
+}
+
+/* 反转颜色的按钮样式 */
+.night-mode .upload-button {
+  background: #e2e8f0;
+}
+
+.night-mode .upload-button:hover {
+  background: #f1f5f9;
+}
+
+.night-mode .markdown-send-button {
+  background: white;
+  color: #212121;
+}
+
+.night-mode .markdown-send-button:hover {
+  background: white;
+  color: #212121;
+}
+
+.night-mode .markdown-send-button.disabled {
+  background: #ccc;
+  color: white;
+}
+
+/* 夜间模式下设置模态框样式 */
+.night-mode .settings-modal-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.night-mode .settings-modal {
+  background: #222;
+  color: white;
+}
+
+.night-mode .settings-menu {
+  background: #1a1a1a;
+  border-right: 1px solid #333;
+  box-shadow: 2px 0 8px -4px rgba(255, 255, 255, 0.05);
+}
+
+.night-mode .settings-menu-item {
+  color: #ccc;
+}
+
+.night-mode .settings-menu-item:hover {
+  background: #333;
+}
+
+.night-mode .settings-menu-item.active {
+  background: #3a4a8a;
+  color: white;
+  box-shadow: 
+    0 4px 16px 0 rgba(100, 126, 250, 0.15), 
+    0 2px 8px 0 rgba(255, 255, 255, 0.10),
+    2px 0 12px -2px rgba(100, 126, 250, 0.08);
+}
+
+.night-mode .settings-detail {
+  background: #222;
+}
+
+.night-mode .settings-detail h2 {
+  color: white;
+}
+
+.night-mode .settings-detail label {
+  color: #ccc;
+}
+
+.night-mode .settings-detail input, 
+.night-mode .settings-detail select {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+}
+
+.night-mode .settings-detail button {
+  background: #3a4a8a;
+}
+
+.night-mode .settings-detail button:hover {
+  background: #4a5a9a;
+}
+
+/* src/index.css */
+
+/* ... 原有的样式 ... */
+
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  padding: 15px 0;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.sidebar-item:hover {
+  background: #333;
+}
+
+.sidebar-item.active {
+  background: #e0e7ff;
+  color: #2d47a5;
+  font-weight: bold;
+  /* 明显的阴影效果 */
+  box-shadow: 
+    0 4px 16px 0 rgba(50,76,200,0.15), 
+    0 2px 8px 0 rgba(0,0,0,0.10),
+    2px 0 12px -2px rgba(50,76,200,0.08);
+  position: relative;
+  z-index: 2;
+  /* 轻微向右移动，增强浮起效果 */
+  transform: translateX(4px);
+}
+
+.sidebar-item i {
+  font-size: 1.5rem;
+}
+.sidebar-item span {
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+.iframe-container {
+  position: relative; /* 设置为相对定位，以便子元素绝对定位 */
+  width: 100%;
+  height: 100%;
+}
+
+.close-button {
+  position: absolute; /* 绝对定位 */
+  top: 0px; /* 距离顶部 10px */
+  right: 10px; /* 距离右侧 10px */
+  background: transparent; /* 背景透明 */
+  border: none; /* 去除边框 */
+  color: #ffffff; /* 文字颜色 */
+  font-size: 24px; /* 字体大小 */
+  cursor: pointer; /* 鼠标指针样式 */
+  z-index: 10; /* 确保按钮在最上层 */
+  transition: color 0.2s; /* 添加过渡效果 */
+}
+
+.close-button:hover {
+  color: #e70909; /* 鼠标悬停时颜色变化 */
+}
+
+.night-mode .close-button {
+  color: white; /* 夜间模式下文字颜色 */
+}
+
+.night-mode .close-button:hover {
+  color: #666; /* 夜间模式下鼠标悬停时颜色变化 */
+}

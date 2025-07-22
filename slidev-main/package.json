@@ -1,0 +1,88 @@
+{
+  "type": "module",
+  "version": "52.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.12.4",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter=./packages/** --parallel run build",
+    "ci:publish": "zx scripts/publish.mjs",
+    "cy": "cypress open",
+    "cy:fixture": "pnpm -C cypress/fixtures/basic run dev",
+    "demo:build": "zx ./scripts/demo.mjs",
+    "demo:composable-vue": "pnpm -C demo/composable-vue run dev",
+    "demo:vue-runner": "pnpm -C demo/vue-runner run dev",
+    "demo:dev": "pnpm -C demo/starter run dev",
+    "vscode:dev": "pnpm -C packages/vscode run dev",
+    "play": "pnpm demo:dev",
+    "dev": "pnpm -r --filter=./packages/** --parallel run dev",
+    "lint": "eslint . --cache",
+    "lint:fix": "nr lint --fix",
+    "typecheck": "vue-tsc --noEmit",
+    "docs": "pnpm -C docs run dev",
+    "docs:build": "pnpm run --filter {./docs}... build && pnpm demo:build",
+    "release": "bumpp package.json packages/*/package.json docs/package.json --all -x \"zx scripts/update-versions.mjs\"",
+    "test": "vitest test",
+    "prepare": "simple-git-hooks"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:dev",
+    "@antfu/ni": "catalog:prod",
+    "@antfu/utils": "catalog:frontend",
+    "@shikijs/markdown-it": "catalog:frontend",
+    "@slidev/cli": "workspace:*",
+    "@slidev/parser": "workspace:*",
+    "@slidev/types": "workspace:*",
+    "@types/cli-progress": "catalog:types",
+    "@types/connect": "catalog:types",
+    "@types/debug": "catalog:types",
+    "@types/file-saver": "catalog:types",
+    "@types/js-yaml": "catalog:types",
+    "@types/katex": "catalog:types",
+    "@types/markdown-it": "catalog:types",
+    "@types/node": "catalog:types",
+    "@types/prompts": "catalog:types",
+    "@types/recordrtc": "catalog:types",
+    "@types/resolve": "catalog:types",
+    "@types/semver": "catalog:types",
+    "@types/yargs": "catalog:types",
+    "@vueuse/core": "catalog:frontend",
+    "bumpp": "catalog:dev",
+    "cross-env": "catalog:dev",
+    "cypress": "catalog:dev",
+    "eslint": "catalog:dev",
+    "eslint-plugin-format": "catalog:dev",
+    "katex": "catalog:frontend",
+    "lint-staged": "catalog:dev",
+    "mermaid": "catalog:frontend",
+    "playwright-chromium": "catalog:dev",
+    "prettier": "catalog:frontend",
+    "prettier-plugin-slidev": "catalog:dev",
+    "rimraf": "catalog:dev",
+    "shiki": "catalog:frontend",
+    "simple-git-hooks": "catalog:dev",
+    "taze": "catalog:dev",
+    "tinyexec": "catalog:prod",
+    "tsdown": "catalog:dev",
+    "tsx": "catalog:dev",
+    "typescript": "catalog:dev",
+    "vite": "catalog:prod",
+    "vitest": "catalog:dev",
+    "vue-tsc": "catalog:dev",
+    "zx": "catalog:dev"
+  },
+  "resolutions": {
+    "typescript": "catalog:dev",
+    "vite": "catalog:prod"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,vue,json}": [
+      "eslint --fix --cache"
+    ]
+  }
+}
