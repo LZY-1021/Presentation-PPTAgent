@@ -2,14 +2,15 @@ import { serve } from "bun";
 import index from "./index.html";
 import { execSync } from 'child_process';
 import path from 'path';
+import { CONFIG } from "./config";
 
 const server = serve({
   fetch(req) {
     // 设置 CORS 头信息
     const headers = new Headers();
-    headers.set('Access-Control-Allow-Origin', 'http://localhost:3000');
-    headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    headers.set('Access-Control-Allow-Origin', CONFIG.cors.allowOrigin);
+    headers.set('Access-Control-Allow-Methods', CONFIG.cors.allowMethods);
+    headers.set('Access-Control-Allow-Headers', CONFIG.cors.allowHeaders);
 
     // 处理预检请求
     if (req.method === 'OPTIONS') {
@@ -77,7 +78,7 @@ const server = serve({
   async POST(req) {
     try {
       // 在这里替换原有的命令
-      const command = 'cd /d D:\\Presentation-PPTAgent\\slidev && python slidev_auto_preview.py';
+      const command = `cd /d ${CONFIG.paths.slidevDir} && python slidev_auto_preview.py`;
       // 运行命令
       execSync(command, { stdio: 'inherit' });
       return Response.json({ success: true });

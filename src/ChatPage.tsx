@@ -3,6 +3,7 @@ import logo from "./PPTlogo.svg";
 import userAvatar from "./logo.svg";
 import ReactMarkdown from "react-markdown";
 import React from "react";
+import { CONFIG } from "./config";
 
 const parseTextWithNewlines = (text: string) => {
   return text.split("\n").map((line, index) => (
@@ -13,14 +14,10 @@ const parseTextWithNewlines = (text: string) => {
   ));
 };
 
-const WEBHOOK_URL =
-  "http://localhost:5678/webhook/74c65517-4c77-4442-98cd-b97f5c0e7bc4";
-const MARKDOWN_WEBHOOK_URL =
-  "http://localhost:5678/webhook/e141ae2f-00d7-4d88-9f47-786156b75cc9";
-const Slidev_WEBHOOK_URL =
-  "http://localhost:5678/webhook-test/ca69df3e-386b-45b6-80fe-a5810363c997";
-const PPTX_WEBHOOK_URL =
-  "http://localhost:5678/webhook-test/9c0ce6b6-6db8-4402-956c-38d4815c0936"; // Replace with your n8n webhook URL for PPTX
+const WEBHOOK_URL = CONFIG.webhooks.n8n.main;
+const MARKDOWN_WEBHOOK_URL = CONFIG.webhooks.n8n.markdown;
+const Slidev_WEBHOOK_URL = CONFIG.webhooks.n8n.slidev;
+const PPTX_WEBHOOK_URL = CONFIG.webhooks.n8n.pptx;
 
 export function ChatPage({
   evaluationCriteria,
@@ -253,7 +250,7 @@ export function ChatPage({
           { sender: "ai", text: data.output },
         ]);
         if (slidevIframeRef.current) {
-          slidevIframeRef.current.src = "http://localhost:3030/";
+          slidevIframeRef.current.src = CONFIG.servers.slidev.url;
         }
         setShowSlidev(true);
         saveConversation();
@@ -315,7 +312,7 @@ export function ChatPage({
           ]);
           setSlidevMarkdown(data.output);
           if (slidevIframeRef.current) {
-            slidevIframeRef.current.src = "http://localhost:3030/";
+            slidevIframeRef.current.src = CONFIG.servers.slidev.url;
             console.log("Iframe src 设置为:", slidevIframeRef.current.src);
           }
         } else {
@@ -376,7 +373,7 @@ export function ChatPage({
           <button className="close-button" onClick={handleCloseIframe}>×</button>
           <iframe
             ref={slidevIframeRef}
-            src="http://localhost:3030/"
+            src={CONFIG.servers.slidev.url}
             style={{ width: "100%", height: "90vh" }}
           />
           <form onSubmit={handleSlidevSubmit} className="slidev-input">

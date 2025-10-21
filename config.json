@@ -1,0 +1,72 @@
+{
+  "api": {
+    "deepseek": {
+      "url": "https://api.deepseek.com/v1/chat/completions",
+      "key": "sk-4c5e3f379f834aa197fec3834a8c9b07",
+      "model": "deepseek-chat"
+    },
+    "openai": {
+      "key": "sk-iS1MfXEJl0of8xSx8eX5ED6v11KkQbU1Z4CV4jfdDMQv57a8",
+      "baseUrl": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-4o",
+      "maxTokens": 100,
+      "temperature": 0.0
+    }
+  },
+  "webhooks": {
+    "n8n": {
+      "base": "http://localhost:5678",
+      "endpoints": {
+        "main": "/webhook/74c65517-4c77-4442-98cd-b97f5c0e7bc4",
+        "markdown": "/webhook/e141ae2f-00d7-4d88-9f47-786156b75cc9",
+        "slidev": "/webhook-test/ca69df3e-386b-45b6-80fe-a5810363c997",
+        "pptx": "/webhook-test/9c0ce6b6-6db8-4402-956c-38d4815c0936",
+        "init": "/webhook/35a6809d-4a69-4a56-9e24-45a1736a2071"
+      }
+    }
+  },
+  "servers": {
+    "frontend": {
+      "port": 3000,
+      "url": "http://localhost:3000"
+    },
+    "slidev": {
+      "port": 3030,
+      "url": "http://localhost:3030"
+    },
+    "mineru": {
+      "port": 30000,
+      "url": "http://localhost:30000"
+    }
+  },
+  "paths": {
+    "metricFile": "metric_dict.json",
+    "slidevDir": "D:\\Presentation-PPTAgent\\slidev"
+  },
+  "evaluation": {
+    "criteria": {
+      "text": {
+        "criteria": "The title should be concise, precise, and accurately reflect the academic topic; main content must be clear, rigorous, and logically structured, using proper headings and well-distinguished levels. Avoid colloquialism, ensure high relevance to the academic subject, and support key points with evidence or clear referencing where necessary. Use consistent and readable font sizes, styles, and colors; text should include appropriate academic terminology and, if relevant, proper citations.",
+        "scale": 5
+      },
+      "image": {
+        "criteria": "Images and charts must be high quality (clear, no distortion, watermarks, or unnecessary borders), appropriately sized, and scientifically relevant to the topic. Images should enhance or explain the academic content (e.g., research data, diagrams, statistical figures). Each image or chart should have a concise title or caption and clearly indicate the data source if applicable. The layout must align with the page style and maintain an academic tone. No penalty for slides without images.",
+        "scale": 5
+      },
+      "layout": {
+        "criteria": "All elements (text, images, formulas, icons, tables) should be well-aligned, evenly spaced, and entirely within slide boundaries. The hierarchy of content must be clear, enabling easy comprehension of the academic argument or logic. Ensure proper use of white space to avoid overcrowding. The visual focus should highlight key points or findings, supporting natural reading flow. Follow academic or institutional template standards if available.",
+        "scale": 5
+      },
+      "color": {
+        "criteria": "Use high-contrast color specifically between text and background to ensure legibility. Avoid overly bright or saturated colors; color schemes should be professional and suitable for academic conferences. Charts and diagrams should use distinguishable colors for different data sets and be considerate of color accessibility (e.g., colorblind-safe). Highlight important information subtly without disrupting the academic style.",
+        "scale": 5
+      }
+    },
+    "metrics": ["text", "image", "layout", "color"]
+  },
+  "cors": {
+    "allowOrigin": "http://localhost:3000",
+    "allowMethods": "GET, POST, PUT, DELETE, OPTIONS",
+    "allowHeaders": "Content-Type, Authorization"
+  }
+}

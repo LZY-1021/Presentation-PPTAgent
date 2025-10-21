@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# Presentation-PPTAgent
-Presentation-PPTAgent
-=======
 # bun-react-template
 
 To install dependencies:
@@ -23,4 +19,3 @@ bun start
 ```
 
 This project was created using `bun init` in bun v1.2.17. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
->>>>>>> 918ca59 (first commit)

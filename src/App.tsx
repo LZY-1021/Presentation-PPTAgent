@@ -5,33 +5,19 @@ import "./index.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import SettingsModal from "./SettingsModal";
+import { CONFIG } from "./config";
 
-const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
-const DEEPSEEK_API_KEY = "sk-4c5e3f379f834aa197fec3834a8c9b07";
+const DEEPSEEK_API_URL = CONFIG.api.deepseek.url;
+const DEEPSEEK_API_KEY = CONFIG.api.deepseek.key;
 
 export function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [nightMode, setNightMode] = useState(
     localStorage.getItem("nightMode") === "true"
   );
-  const [evaluationCriteria, setEvaluationCriteria] = useState({
-     "text": {
-      "criteria": "The title should be concise, precise, and accurately reflect the academic topic; main content must be clear, rigorous, and logically structured, using proper headings and well-distinguished levels. Avoid colloquialism, ensure high relevance to the academic subject, and support key points with evidence or clear referencing where necessary. Use consistent and readable font sizes, styles, and colors; text should include appropriate academic terminology and, if relevant, proper citations.",
-      "scale": 5
-    },
-    "image": {
-      "criteria": "Images and charts must be high quality (clear, no distortion, watermarks, or unnecessary borders), appropriately sized, and scientifically relevant to the topic. Images should enhance or explain the academic content (e.g., research data, diagrams, statistical figures). Each image or chart should have a concise title or caption and clearly indicate the data source if applicable. The layout must align with the page style and maintain an academic tone. No penalty for slides without images.",
-      "scale": 5
-    },
-    "layout": {
-      "criteria": "All elements (text, images, formulas, icons, tables) should be well-aligned, evenly spaced, and entirely within slide boundaries. The hierarchy of content must be clear, enabling easy comprehension of the academic argument or logic. Ensure proper use of white space to avoid overcrowding. The visual focus should highlight key points or findings, supporting natural reading flow. Follow academic or institutional template standards if available.",
-      "scale": 5
-    },
-    "color": {
-      "criteria": "Use high-contrast color specifically between text and background to ensure legibility. Avoid overly bright or saturated colors; color schemes should be professional and suitable for academic conferences. Charts and diagrams should use distinguishable colors for different data sets and be considerate of color accessibility (e.g., colorblind-safe). Highlight important information subtly without disrupting the academic style.",
-      "scale": 5
-    },
-  });
+  const [evaluationCriteria, setEvaluationCriteria] = useState(
+    CONFIG.evaluation.criteria
+  );
   const [shouldClear, setShouldClear] = useState(false);
   const [activeSidebarItem, setActiveSidebarItem] = useState("home");
   const [showSlidev, setShowSlidev] = useState(false);

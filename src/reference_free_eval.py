@@ -6,14 +6,16 @@ import argparse
 from PIL import Image
 
 from openai import OpenAI
+from config import get_openai_config, get_evaluation_criteria, get_evaluation_metrics, get_metric_file
 
+openai_config = get_openai_config()
 client = OpenAI(
-    api_key="sk-iS1MfXEJl0of8xSx8eX5ED6v11KkQbU1Z4CV4jfdDMQv57a8",
-    base_url="https://api.chatanywhere.tech/v1"
+    api_key=openai_config['key'],
+    base_url=openai_config['baseUrl']
 )
 
 # 定义存储评估标准的文件路径
-METRIC_FILE = 'metric_dict.json'
+METRIC_FILE = get_metric_file()
 
 # 读取保存的评估标准
 if os.path.exists(METRIC_FILE):
@@ -22,19 +24,9 @@ if os.path.exists(METRIC_FILE):
             METRIC_DICT = json.load(f)
     except json.JSONDecodeError:
         print(f"读取 {METRIC_FILE} 文件时发生 JSON 解析错误，将使用默认评估标准。")
-        METRIC_DICT = {
-           "text": {"criteria": "The title should be concise, precise, and accurately reflect the academic topic; main content must be clear, rigorous, and logically structured, using proper headings and well-distinguished levels. Avoid colloquialism, ensure high relevance to the academic subject, and support key points with evidence or clear referencing where necessary. Use consistent and readable font sizes, styles, and colors; text should include appropriate academic terminology and, if relevant, proper citations.","scale": 5},
-           "image": {"criteria": "Images and charts must be high quality (clear, no distortion, watermarks, or unnecessary borders), appropriately sized, and scientifically relevant to the topic. Images should enhance or explain the academic content (e.g., research data, diagrams, statistical figures). Each image or chart should have a concise title or caption and clearly indicate the data source if applicable. The layout must align with the page style and maintain an academic tone. No penalty for slides without images.","scale": 5},
-           "layout": {"criteria": "All elements (text, images, formulas, icons, tables) should be well-aligned, evenly spaced, and entirely within slide boundaries. The hierarchy of content must be clear, enabling easy comprehension of the academic argument or logic. Ensure proper use of white space to avoid overcrowding. The visual focus should highlight key points or findings, supporting natural reading flow. Follow academic or institutional template standards if available.","scale": 5},
-           "color": {"criteria": "Use high-contrast color specifically between text and background to ensure legibility. Avoid overly bright or saturated colors; color schemes should be professional and suitable for academic conferences. Charts and diagrams should use distinguishable colors for different data sets and be considerate of color accessibility (e.g., colorblind-safe). Highlight important information subtly without disrupting the academic style.","scale": 5},
-        }
+        METRIC_DICT = get_evaluation_criteria()
 else:
-    METRIC_DICT = {
-           "text": {"criteria": "The title should be concise, precise, and accurately reflect the academic topic; main content must be clear, rigorous, and logically structured, using proper headings and well-distinguished levels. Avoid colloquialism, ensure high relevance to the academic subject, and support key points with evidence or clear referencing where necessary. Use consistent and readable font sizes, styles, and colors; text should include appropriate academic terminology and, if relevant, proper citations.","scale": 5},
-           "image": {"criteria": "Images and charts must be high quality (clear, no distortion, watermarks, or unnecessary borders), appropriately sized, and scientifically relevant to the topic. Images should enhance or explain the academic content (e.g., research data, diagrams, statistical figures). Each image or chart should have a concise title or caption and clearly indicate the data source if applicable. The layout must align with the page style and maintain an academic tone. No penalty for slides without images.","scale": 5},
-           "layout": {"criteria": "All elements (text, images, formulas, icons, tables) should be well-aligned, evenly spaced, and entirely within slide boundaries. The hierarchy of content must be clear, enabling easy comprehension of the academic argument or logic. Ensure proper use of white space to avoid overcrowding. The visual focus should highlight key points or findings, supporting natural reading flow. Follow academic or institutional template standards if available.","scale": 5},
-           "color": {"criteria": "Use high-contrast color specifically between text and background to ensure legibility. Avoid overly bright or saturated colors; color schemes should be professional and suitable for academic conferences. Charts and diagrams should use distinguishable colors for different data sets and be considerate of color accessibility (e.g., colorblind-safe). Highlight important information subtly without disrupting the academic style.","scale": 5},
-    }
+    METRIC_DICT = get_evaluation_criteria()
 
 INSTRUCTION = """Please evaluate the slide based on the following criteria:
 {}
@@ -136,10 +128,10 @@ if __name__ == "__main__":
     parser.add_argument("--response_path", type=str, default=None,
                         help="Path to save the model-evaluation justifications.")
     parser.add_argument("--metric_to_use", type=str, nargs='+',
-                        default=["text", "image", "layout", "color"],
+                        default=get_evaluation_metrics(),
                         help="Metrics to evaluate.")
-    parser.add_argument("--model_name", type=str, default="gpt-4o", help="Model name to use.")
-    parser.add_argument("--max_tokens", type=int, default=100, help="Max tokens to generate.")
+    parser.add_argument("--model_name", type=str, default=openai_config['model'], help="Model name to use.")
+    parser.add_argument("--max_tokens", type=int, default=openai_config['maxTokens'], help="Max tokens to generate.")
     # 新增命令行参数用于更新评估标准
     parser.add_argument("--update_metric", type=str, nargs=3,
                         default=None, help="Update METRIC_DICT with new metric. Format: name criteria scale")
