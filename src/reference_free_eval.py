@@ -8,7 +8,7 @@ from PIL import Image
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-iS1MfXEJl0of8xSx8eX5ED6v11KkQbU1Z4CV4jfdDMQv57a8",
+    api_key="sk-xxx",
     base_url="https://api.chatanywhere.tech/v1"
 )
 
