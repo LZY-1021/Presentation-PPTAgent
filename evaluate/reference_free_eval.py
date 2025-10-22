@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-iS1MfXEJl0of8xSx8eX5ED6v11KkQbU1Z4CV4jfdDMQv57a8",
+    api_key="sk-xxxxxx",
     base_url="https://api.chatanywhere.tech/v1"
 )
 
